@@ -7,21 +7,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted, toRefs, reactive, defineExpose } from "vue"
+import { ref, onMounted, toRefs, reactive, watch, defineExpose } from "vue"
+
+defineOptions({
+  name: "imageCoord"
+})
 
 const props = defineProps({
   config: {
     type: Object,
     default: () => ({
-      imgUrl: "",
-      originX: 0,
-      originY: 0,
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 0,
-      showBoundary: true,
-      showAxis: true
+      imgUrl: "", // 图片路径
+      originX: 0, // 原点X位置
+      originY: 0, // 原点Y位置
+      width: 0, // 宽
+      height: 0, // 高
+      x: 0, // X坐标
+      y: 0, // Y坐标
+      showBoundary: true, // 显示边界
+      showAxis: true // 显示轴线
     })
   }
 })
@@ -66,32 +70,37 @@ const imgRef = ref(null)
 
 let boxData = {}
 
+// 原点相对位置
 let originPosition = { x: 0, y: 0 }
 
+// 红点大小和属性
 const payload = {
-  width: 30,
-  height: 30,
-  color: "red"
+  width: 30, // 宽度
+  height: 30, // 高度
+  color: "red" // 深度
 }
 
 onMounted(() => {})
 
+// 窗口自适应
 const handleResize = () => {
   setAxis()
-
+  // drawDot()
   drawBoundaryLines(imgContainer.value, boxData)
   drawAxisLines(imgContainer.value)
 }
 
+// 模仿elementPlus的rule校验
 const valueValidate = () => {
   const values = config.value
   const errors = []
 
   for (const key in rules) {
     const ruleList = rules[key]
-    const value = parseFloat(values[key])
+    const value = parseFloat(values[key]) // 转换为数值以防是字符串
 
     for (const rule of ruleList) {
+      // 校验最大最小值
       if (value < rule.min || value > rule.max) {
         errors.push(rule.message)
         break
@@ -108,28 +117,46 @@ const valueValidate = () => {
   return true
 }
 
+// 设置坐标轴
 const setAxis = () => {
   autoCalibration()
   originPosition = convertToPixelByView(config.value.x, config.value.y)
 }
 
+// 优化坐标转换调用
 const convertToPixelByView = (x, y) =>
   convertToPixel(x, y, boxData, imgRef.value, config.value.width, config.value.height)
 
+/**
+ * 将物理坐标转换为像素坐标
+ * @param {number} imgX 实际X坐标（如x或y）
+ * @param {number} imgY 实际Y坐标（如z）
+ * @param {object} box 图像的四边像素位置 { left, right, top, bottom }
+ * @param {HTMLElement} imgDom 图片DOM
+ * @param {number} realWidth 实际物理宽度（如 length 或 breadth）
+ * @param {number} realHeight 实际物理高度（如 height）
+ * @returns {object} { x, y } 像素坐标
+ */
 const convertToPixel = (imgX, imgY, box, imgDom, realWidth, realHeight) => {
   const { left, right, top, bottom } = box
 
+  // 图片的像素宽高
   const pixelWidth = right - left
   const pixelHeight = bottom - top
 
+  // 通过实际坐标和实际宽高得出一个比例，再用比例和像素宽高得出实际坐标下的像素宽高
   const relAPx = (imgX / (realWidth / 2)) * (pixelWidth / 2)
   const relBPx = (imgY / realHeight) * pixelHeight
 
+  // 获取原点位置计算起点
   const originX = config.value.originX / 100
   const originY = config.value.originY / 100
   const pxX = (left + right) * originX + relAPx
   const pxY = (top + bottom) * originY + relBPx
 
+  // const pxY = bottom - relBPx
+
+  // 计算在缩放情况下的比例
   const rect = imgDom.getBoundingClientRect()
   const scaleX = rect.width / imgDom.naturalWidth
   const scaleY = rect.height / imgDom.naturalHeight
@@ -140,18 +167,21 @@ const convertToPixel = (imgX, imgY, box, imgDom, realWidth, realHeight) => {
   }
 }
 
+// 设置坐标范围
 const setCoordinateRange = () => {
   const width = parseFloat(config.value.width)
   const height = parseFloat(config.value.height)
   const originX = parseFloat(config.value.originX)
   const originY = parseFloat(config.value.originY)
 
+  // 设置X坐标范围
   const xMin = -width * (originX / 100)
   const xMax = width + xMin
   rules.x[0].min = xMin
   rules.x[0].max = xMax
   rules.x[0].message = `X坐标范围为 [${xMin}, ${xMax}]`
 
+  // 设置Y坐标范围
   const yMin = -height * (originY / 100)
   const yMax = height + yMin
   rules.y[0].min = yMin
@@ -161,6 +191,7 @@ const setCoordinateRange = () => {
   console.log("rules: ", rules)
 }
 
+// 在图上绘制红点
 const drawDot = () => {
   const validateRes = valueValidate()
   if (validateRes) {
@@ -186,6 +217,7 @@ const drawDot = () => {
   }
 }
 
+// 移除场景小球
 const removeDot = () => {
   const imgCon = imgContainer.value
   const dot = imgCon.querySelector(".moving-dot")
@@ -195,6 +227,7 @@ const removeDot = () => {
   }
 }
 
+// 创建边界线条
 const createBoundaryLine = style => {
   const line = document.createElement("div")
   line.className = "showBoundary-line"
@@ -213,6 +246,7 @@ const createBoundaryLine = style => {
   return line
 }
 
+// 创建坐标轴线条
 const createAxisLine = style => {
   const line = document.createElement("div")
   line.className = "showAxis-line"
@@ -231,7 +265,9 @@ const createAxisLine = style => {
   return line
 }
 
+// 绘制边界
 const drawBoundaryLines = (container, data) => {
+  // 清理旧标线
   container.querySelectorAll(".showBoundary-line").forEach(el => {
     if (el) {
       el.remove()
@@ -249,6 +285,7 @@ const drawBoundaryLines = (container, data) => {
   const pxTop = top * scaleY
   const pxBottom = bottom * scaleY
 
+  // 左线
   container.appendChild(
     createBoundaryLine({
       left: `${pxLeft}px`,
@@ -257,7 +294,7 @@ const drawBoundaryLines = (container, data) => {
       height: `${pxBottom - pxTop}px`
     })
   )
-
+  // 右线
   container.appendChild(
     createBoundaryLine({
       left: `${pxRight}px`,
@@ -266,7 +303,7 @@ const drawBoundaryLines = (container, data) => {
       height: `${pxBottom - pxTop}px`
     })
   )
-
+  // 上线
   container.appendChild(
     createBoundaryLine({
       left: `${pxLeft}px`,
@@ -275,7 +312,7 @@ const drawBoundaryLines = (container, data) => {
       height: "4px"
     })
   )
-
+  // 下线
   container.appendChild(
     createBoundaryLine({
       left: `${pxLeft}px`,
@@ -286,13 +323,16 @@ const drawBoundaryLines = (container, data) => {
   )
 }
 
+// 绘制坐标轴
 const drawAxisLines = container => {
+  // 清理旧标线
   container.querySelectorAll(".showAxis-line").forEach(el => {
     if (el) {
       el.remove()
     }
   })
 
+  // X轴
   container.appendChild(
     createAxisLine({
       left: `0px`,
@@ -301,7 +341,7 @@ const drawAxisLines = container => {
       height: "2px"
     })
   )
-
+  // y轴
   container.appendChild(
     createAxisLine({
       left: `${originPosition.x}px`,
@@ -312,31 +352,39 @@ const drawAxisLines = container => {
   )
 }
 
+// 自动处理图像四边，不精确可手动录入信息
 const autoCalibration = () => {
   boxData = getImageCropRect(imgContainer.value, imgRef.value)
 }
 
+// 获取传入图像对应图片实际像素位置
 const getImageCropRect = (container, img) => {
   if (!container || !img) return null
 
   const containerRect = container.getBoundingClientRect()
   const imageRect = img.getBoundingClientRect()
 
+  // 获取原图尺寸（自然尺寸）
   const naturalWidth = img.naturalWidth
   const naturalHeight = img.naturalHeight
 
+  // 实际显示尺寸
   const imageWidth = imageRect.width
   const imageHeight = imageRect.height
 
+  // 容器尺寸
   const containerWidth = containerRect.width
   const containerHeight = containerRect.height
 
+  // 缩放比
   const scaleX = naturalWidth / imageWidth
   const scaleY = naturalHeight / imageHeight
 
+  // 偏移量（居中）
   const offsetLeft = (containerWidth - imageWidth) / 2
   const offsetTop = (containerHeight - imageHeight) / 2
 
+  // 计算边界（注意右下要用 naturalWidth - (offset + size)）
   const left = Math.round(offsetLeft * scaleX)
   const right = Math.round(containerWidth * scaleX - left)
   const top = Math.round(offsetTop * scaleY)
@@ -353,6 +401,13 @@ const changeAxis = () => {
   setAxis()
   drawAxisLines(imgContainer.value)
 }
+
+watch(() => config.value.showBoundary, changeBoundary)
+
+watch(
+  () => [config.value.originX, config.value.originY, config.value.width, config.value.height, config.value.showAxis],
+  changeAxis
+)
 
 defineExpose({
   drawDot

@@ -8,12 +8,14 @@ import "element-plus/dist/index.css"
 
 import imageCoord from "/packages/index.js"
 
-const app = createApp(App)
+import "./assets/styles/index.css"
 
-app.use(imageCoord)
+const app = createApp(App)
 
 app.use(router)
 
 app.use(ElementPlus)
+
+app.use(imageCoord)
 
 app.mount("#app")

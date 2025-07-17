@@ -49,7 +49,7 @@ import { ref, reactive, onMounted } from "vue"
 const imageCoordRef = ref()
 
 const form = reactive({
-  imgUrl: "src/assets/images/test.jpg", // 图片路径
+  imgUrl: "/src/assets/images/imageCoordTest.jpg", // 图片路径
   originX: 50, // 原点X位置
   originY: 50, // 原点Y位置
   width: 100, // 宽
@@ -102,9 +102,7 @@ const drawDot = () => {
 
 <style lang="scss" scoped>
 .wrap {
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
   .imageCoordWrap {
     width: 70%;
