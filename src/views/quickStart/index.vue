@@ -1,32 +1,7 @@
-# 用于将图片像素自动转换为实际尺寸坐标
-
-## 快速开始
-
-```vue
-<template>
-  <imageCoord :config="config" />
-</template>
-
-<script setup>
-let config = {
-  imgUrl: "/src/assets/images/imageCoordTest.jpg", // 图片路径
-  originX: 50, // 原点X位置
-  originY: 50, // 原点Y位置
-  width: 100, // 宽
-  height: 50, // 高
-  x: 0, // X坐标
-  y: 0, // Y坐标
-  showBoundary: true, // 显示边界
-  showAxis: true // 显示轴线
-}
-</script>
-```
-
-## 完整示例
-
-```vue
 <template>
   <div class="wrap">
+    <h2>快速开始</h2>
+
     <div class="imageCoordWrap">
       <imageCoord ref="imageCoordRef" :config="config" />
     </div>
@@ -70,6 +45,3 @@ const drawDot = () => {
   }
 }
 </style>
-```
-
-## Props

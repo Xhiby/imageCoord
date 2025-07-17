@@ -1,47 +1,7 @@
 <template>
-  <div class="wrap">
-    <div class="imageCoordWrap">
-      <imageCoord ref="imageCoordRef" :config="config" />
-    </div>
-
-    <button type="primary" @click="drawDot">开始绘制</button>
-  </div>
+  <router-view></router-view>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue"
+<script setup></script>
 
-const imageCoordRef = ref()
-
-const config = {
-  imgUrl: "/src/assets/images/imageCoordTest.jpg", // 图片路径
-  originX: 50, // 原点X位置
-  originY: 50, // 原点Y位置
-  width: 100, // 宽
-  height: 50, // 高
-  x: 0, // X坐标
-  y: 0, // Y坐标
-  showBoundary: true, // 显示边界
-  showAxis: true // 显示轴线
-}
-
-onMounted(() => {})
-
-const drawDot = () => {
-  imageCoordRef.value.drawDot()
-}
-</script>
-
-<style lang="scss" scoped>
-.wrap {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  .imageCoordWrap {
-    width: 70%;
-    margin-bottom: 20px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
