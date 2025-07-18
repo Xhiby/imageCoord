@@ -73,3 +73,4 @@ const drawDot = () => {
 ```
 
 ## Props
+![](../src/assets/images/props.png)
