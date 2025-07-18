@@ -85,4 +85,4 @@ const drawDot = () => {
 ```
 
 ## Props
-![](../src/assets/images/props.png)
+![props说明](https://github.com/Xhiby/imageCoord/blob/master/src/assets/images/props.png)
