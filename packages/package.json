@@ -1,0 +1,26 @@
+{
+  "name": "image-coord",
+  "version": "1.0.1",
+  "description": "基于Vue的将图片像素自动转换为实际尺寸坐标",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xhiby/imageCoord.git"
+  },
+  "dependencies": {
+    "vue": "^3.5.17",
+    "sass": "^1.89.2"
+  },
+  "keywords": [
+    "图片像素转换"
+  ],
+  "author": "Xhiby",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xhiby/imageCoord/issues"
+  },
+  "homepage": "https://github.com/Xhiby/imageCoord#readme"
+}
