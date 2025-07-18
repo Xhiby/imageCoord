@@ -2,6 +2,18 @@
 
 ## 快速开始
 
+### 安装
+```bash
+npm install image-coord
+```
+
+### 使用
+```js
+import imageCoord from "image-coord"
+
+app.use(imageCoord)
+```
+
 ```vue
 <template>
   <imageCoord :config="config" />
