@@ -2,6 +2,18 @@
 
 ## 快速开始
 
+### 安装
+```bash
+npm install image-coord
+```
+
+### 使用
+```js
+import imageCoord from "image-coord"
+
+app.use(imageCoord)
+```
+
 ```vue
 <template>
   <imageCoord :config="config" />
@@ -73,4 +85,4 @@ const drawDot = () => {
 ```
 
 ## Props
-![](../src/assets/images/props.png)
+![props说明](https://github.com/Xhiby/imageCoord/blob/master/src/assets/images/props.png)

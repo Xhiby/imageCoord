@@ -1,6 +1,6 @@
 {
   "name": "image-coord",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "基于Vue的将图片像素自动转换为实际尺寸坐标",
   "main": "index.js",
   "scripts": {
